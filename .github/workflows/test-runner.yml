@@ -1,0 +1,23 @@
+name: Test Runner
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Debug info
+        run: |
+          echo "Runner is working!"
+          whoami
+          pwd
+          node -v || true
+          npm -v || true
+          git --version
