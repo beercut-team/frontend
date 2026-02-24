@@ -6,6 +6,11 @@
 	let { children } = $props();
 </script>
 
+<svelte:head>
+	<title>Beercut — PEAK IT 2026</title>
+	<meta name="description" content="Команда Beercut на конкурсе PEAK IT 2026" />
+</svelte:head>
+
 <div class="flex min-h-svh flex-col">
 	<Header />
 	<main class="flex-1">
