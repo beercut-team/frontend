@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: peak-it-frontend
+
+jobs:
+  check:
+    name: Type Check
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Svelte sync + type check
+        run: bun run check
+
+  build-and-push:
+    name: Build Docker Image
+    runs-on: self-hosted
+    needs: [check]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} -t ${{ env.IMAGE_NAME }}:latest .
+
+      - name: Save image as artifact
+        run: docker save ${{ env.IMAGE_NAME }}:${{ github.sha }} | gzip > image.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-${{ github.sha }}
+          path: image.tar.gz
+          retention-days: 7
+
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - name: Stop old container
+        run: docker stop ${{ env.IMAGE_NAME }} 2>/dev/null || true
+
+      - name: Remove old container
+        run: docker rm ${{ env.IMAGE_NAME }} 2>/dev/null || true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: docker-image-${{ github.sha }}
+
+      - name: Load image
+        run: docker load < image.tar.gz
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name ${{ env.IMAGE_NAME }} \
+            --restart unless-stopped \
+            -p 3000:3000 \
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
