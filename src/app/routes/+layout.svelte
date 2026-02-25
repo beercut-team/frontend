@@ -2,8 +2,14 @@
 	import '@/app/styles/globals.css';
 	import { Header } from '@/widgets/header';
 	import { Footer } from '@/widgets/footer';
+	import { authStore } from '@/entities/user';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+	onMount(() => {
+		authStore.init();
+	});
 </script>
 
 <svelte:head>

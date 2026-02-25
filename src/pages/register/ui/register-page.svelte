@@ -13,6 +13,10 @@
 		CardTitle,
 	} from '@/shared/ui/card';
 	import { Separator } from '@/shared/ui/separator';
+	import { performRegister } from '@/features/auth';
+	import type { AxiosError } from 'axios';
+
+	let apiError = $state('');
 
 	const registerSchema = z
 		.object({
@@ -38,10 +42,16 @@
 			// sveltekit-superforms ZodObjectType doesn't accept ZodEffects — cast required
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			validators: zodClient(registerSchema as any),
-			onUpdate({ form }) {
+			async onUpdate({ form }) {
 				if (form.valid) {
+					apiError = '';
 					const { passwordConfirm: _, ...data } = form.data;
-					console.log('Register data:', data);
+					try {
+						await performRegister(data.name, data.email, data.password);
+					} catch (e) {
+						const err = e as AxiosError<{ detail?: string }>;
+						apiError = err.response?.data?.detail ?? 'Ошибка регистрации. Попробуйте снова.';
+					}
 				}
 			},
 		}
@@ -65,6 +75,9 @@
 
 			<CardContent>
 				<form use:enhance class="flex flex-col gap-4">
+					{#if apiError}
+						<p class="text-sm text-destructive">{apiError}</p>
+					{/if}
 					<Form.Field {form} name="name">
 						{#snippet children({ constraints }: FieldSnippetProps)}
 							<Form.Control>

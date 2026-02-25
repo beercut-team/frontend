@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '@/shared/ui/button';
+	import { authStore } from '@/entities/user';
 </script>
 
 <header
@@ -15,8 +16,14 @@
 		</nav>
 
 		<div class="flex items-center gap-2">
-			<Button variant="ghost" href="/login">Войти</Button>
-			<Button href="/register">Регистрация</Button>
+			{#if authStore.isAuthenticated && authStore.user}
+				<span class="text-sm text-muted-foreground">{authStore.user.name}</span>
+				<Button variant="ghost" href="/profile">Профиль</Button>
+				<Button variant="outline" onclick={() => authStore.logout()}>Выйти</Button>
+			{:else}
+				<Button variant="ghost" href="/login">Войти</Button>
+				<Button href="/register">Регистрация</Button>
+			{/if}
 		</div>
 	</div>
 </header>
