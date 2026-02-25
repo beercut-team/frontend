@@ -19,6 +19,8 @@ export const API_URL = getApiUrl()
 
 class ApiInstance {
 	private axios: AxiosInstance
+	private requestCache = new Map<string, { data: any; timestamp: number }>()
+	private readonly CACHE_TTL = 30000 // 30 seconds
 
 	constructor() {
 		this.axios = axios.create({
@@ -89,7 +91,15 @@ class ApiInstance {
 		endpoint: string,
 		options: AxiosRequestConfig = {},
 	): AxiosPromise<T> {
+		const cacheKey = `${endpoint}${JSON.stringify(options.params || {})}`
+		const cached = this.requestCache.get(cacheKey)
+
+		if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+			return Promise.resolve({ data: cached.data } as AxiosResponse<T>)
+		}
+
 		const response: AxiosResponse<T> = await this.axios.get(endpoint, options)
+		this.requestCache.set(cacheKey, { data: response.data, timestamp: Date.now() })
 		return response
 	}
 
@@ -98,6 +108,7 @@ class ApiInstance {
 		data: object,
 		options: AxiosRequestConfig = {},
 	): AxiosPromise<T> {
+		this.clearCache()
 		const response: AxiosResponse<T> = await this.axios.post(
 			endpoint,
 			data,
@@ -107,11 +118,13 @@ class ApiInstance {
 	}
 
 	async patch<T>(endpoint: string, data: object): AxiosPromise<T> {
+		this.clearCache()
 		const response: AxiosResponse<T> = await this.axios.patch(endpoint, data)
 		return response
 	}
 
 	async put<T>(endpoint: string, data: object): AxiosPromise<T> {
+		this.clearCache()
 		const response: AxiosResponse<T> = await this.axios.put(endpoint, data)
 		return response
 	}
@@ -120,11 +133,16 @@ class ApiInstance {
 		endpoint: string,
 		options: AxiosRequestConfig = {},
 	): AxiosPromise<T> {
+		this.clearCache()
 		const response: AxiosResponse<T> = await this.axios.delete(
 			endpoint,
 			options,
 		)
 		return response
+	}
+
+	clearCache() {
+		this.requestCache.clear()
 	}
 }
 

@@ -111,6 +111,51 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* High Contrast Mode for Visually Impaired */
+.high-contrast {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.9 0 0);
+  --muted-foreground: oklch(0.2 0 0);
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --destructive: oklch(0.4 0 0);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0 0 0);
+  --input: oklch(0 0 0);
+  --ring: oklch(0 0 0);
+}
+
+.high-contrast.dark {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.15 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.8 0 0);
+  --accent: oklch(0.15 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.6 0 0);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0);
+  --input: oklch(1 0 0);
+  --ring: oklch(1 0 0);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -119,6 +164,145 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Enhanced readability for high-contrast mode */
+  .high-contrast {
+    font-size: 112.5%;
+    line-height: 1.6;
+  }
+
+  .high-contrast * {
+    border-width: 2px !important;
+  }
+
+  .high-contrast button,
+  .high-contrast a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Accessibility: Font Sizes */
+  html.a11y-enabled.a11y-font-small {
+    font-size: 87.5%;
+  }
+
+  html.a11y-enabled.a11y-font-medium {
+    font-size: 100%;
+  }
+
+  html.a11y-enabled.a11y-font-large {
+    font-size: 125%;
+    line-height: 1.6;
+  }
+
+  /* Accessibility: Color Schemes */
+  html.a11y-enabled.a11y-scheme-black-white {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0 0 0);
+    --primary: oklch(0 0 0);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.95 0 0);
+    --secondary-foreground: oklch(0 0 0);
+    --muted: oklch(0.9 0 0);
+    --muted-foreground: oklch(0.3 0 0);
+    --accent: oklch(0.95 0 0);
+    --accent-foreground: oklch(0 0 0);
+    --destructive: oklch(0.5 0 0);
+    --border: oklch(0.2 0 0);
+    --input: oklch(0.2 0 0);
+    --ring: oklch(0 0 0);
+  }
+
+  html.a11y-enabled.a11y-scheme-white-black {
+    --background: oklch(0 0 0);
+    --foreground: oklch(1 0 0);
+    --card: oklch(0.1 0 0);
+    --card-foreground: oklch(1 0 0);
+    --popover: oklch(0.1 0 0);
+    --popover-foreground: oklch(1 0 0);
+    --primary: oklch(1 0 0);
+    --primary-foreground: oklch(0 0 0);
+    --secondary: oklch(0.2 0 0);
+    --secondary-foreground: oklch(1 0 0);
+    --muted: oklch(0.15 0 0);
+    --muted-foreground: oklch(0.7 0 0);
+    --accent: oklch(0.2 0 0);
+    --accent-foreground: oklch(1 0 0);
+    --destructive: oklch(0.6 0 0);
+    --border: oklch(0.8 0 0);
+    --input: oklch(0.8 0 0);
+    --ring: oklch(1 0 0);
+  }
+
+  html.a11y-enabled.a11y-scheme-blue-white {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.3 0.15 250);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.3 0.15 250);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.3 0.15 250);
+    --primary: oklch(0.4 0.2 250);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.95 0.02 250);
+    --secondary-foreground: oklch(0.3 0.15 250);
+    --muted: oklch(0.9 0.02 250);
+    --muted-foreground: oklch(0.4 0.1 250);
+    --accent: oklch(0.95 0.02 250);
+    --accent-foreground: oklch(0.3 0.15 250);
+    --destructive: oklch(0.5 0 0);
+    --border: oklch(0.3 0.15 250);
+    --input: oklch(0.3 0.15 250);
+    --ring: oklch(0.4 0.2 250);
+  }
+
+  html.a11y-enabled * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html.a11y-enabled button,
+  html.a11y-enabled a,
+  html.a11y-enabled [role="button"] {
+    cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  html.a11y-enabled input,
+  html.a11y-enabled textarea,
+  html.a11y-enabled select {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+
+  /* Enhanced UI polish */
+  button, a, input, select, textarea {
+    transition: all 0.15s ease-in-out;
+  }
+
+  /* Smooth focus states */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Better card shadows */
+  [class*="card"] {
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  /* Improved link hover states */
+  a:not([class*="button"]) {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
   }
 }

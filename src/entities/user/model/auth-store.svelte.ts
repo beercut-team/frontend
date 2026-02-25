@@ -1,6 +1,7 @@
 import { goto } from "$app/navigation"
 import { apiGetMe, apiLogout } from "@/shared/api"
 import type { AuthResponse, User } from "@/shared/api"
+import { UserRole } from "@/shared/api/types"
 import { getCookie, setCookie } from "@/shared/lib/cookie"
 
 class AuthStore {
@@ -8,6 +9,11 @@ class AuthStore {
 	isAuthenticated = $derived(this.user !== null)
 	isLoading = $state(true)
 	redirectAfterLogin = $state<string | null>(null)
+
+	isAdmin = $derived(this.user?.role === UserRole.ADMIN)
+	isSurgeon = $derived(this.user?.role === UserRole.SURGEON)
+	isDistrictDoctor = $derived(this.user?.role === UserRole.DISTRICT_DOCTOR)
+	isPatient = $derived(this.user?.role === UserRole.PATIENT)
 
 	async init() {
 		const token = getCookie("token")
@@ -18,7 +24,8 @@ class AuthStore {
 
 		try {
 			const { data } = await apiGetMe()
-			this.user = data
+			// API may wrap response in { success, data }
+			this.user = (data as any).data ?? data
 		} catch {
 			setCookie("token", "", -1)
 			setCookie("refresh_token", "", -1)

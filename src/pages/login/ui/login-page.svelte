@@ -14,7 +14,7 @@
 	} from '@/shared/ui/card';
 	import { Separator } from '@/shared/ui/separator';
 	import { performLogin } from '@/features/auth';
-	import type { AxiosError } from 'axios';
+	import { extractApiError } from '@/shared/utils/extract-error';
 
 	let apiError = $state('');
 
@@ -30,7 +30,7 @@
 
 	const form = superForm({ email: '', password: '' } satisfies LoginData, {
 		SPA: true,
-		// sveltekit-superforms ZodObjectType doesn't match inferred zod type — cast required
+		resetForm: false,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		validators: zodClient(loginSchema as any),
 		async onUpdate({ form }) {
@@ -39,8 +39,7 @@
 				try {
 					await performLogin(form.data.email, form.data.password);
 				} catch (e) {
-					const err = e as AxiosError<{ detail?: string }>;
-					apiError = err.response?.data?.detail ?? 'Ошибка входа. Попробуйте снова.';
+					apiError = extractApiError(e, 'Ошибка входа. Попробуйте снова.');
 				}
 			}
 		},
@@ -52,7 +51,7 @@
 <div class="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
 	<div class="w-full max-w-sm">
 		<div class="mb-6 text-center">
-			<a href="/" class="text-2xl font-bold tracking-tight">Beercut</a>
+			<a href="/" class="text-2xl font-bold tracking-tight">Oculus-Feldsher</a>
 			<p class="mt-1 text-sm text-muted-foreground">Войдите в свой аккаунт</p>
 		</div>
 
@@ -64,9 +63,6 @@
 
 			<CardContent>
 				<form use:enhance class="flex flex-col gap-4">
-					{#if apiError}
-						<p class="text-sm text-destructive">{apiError}</p>
-					{/if}
 					<Form.Field {form} name="email">
 						{#snippet children({ constraints }: FieldSnippetProps)}
 							<Form.Control>
@@ -89,15 +85,7 @@
 						{#snippet children({ constraints }: FieldSnippetProps)}
 							<Form.Control>
 								{#snippet children({ props }: ControlSnippetProps)}
-									<div class="flex items-center justify-between">
-										<Form.Label>Пароль</Form.Label>
-										<a
-											href="/forgot-password"
-											class="text-xs text-muted-foreground hover:text-foreground"
-										>
-											Забыли пароль?
-										</a>
-									</div>
+									<Form.Label>Пароль</Form.Label>
 									<Input
 										{...props}
 										{...constraints}
@@ -112,6 +100,13 @@
 					</Form.Field>
 
 					<Form.Button class="mt-2 w-full">Войти</Form.Button>
+
+					{#if apiError}
+						<div class="rounded-md border border-destructive/50 bg-destructive/10 p-3">
+							<p class="text-sm font-medium text-destructive">Ошибка входа</p>
+							<pre class="mt-1 whitespace-pre-wrap text-xs text-destructive/80">{apiError}</pre>
+						</div>
+					{/if}
 				</form>
 			</CardContent>
 

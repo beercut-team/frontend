@@ -8,5 +8,5 @@ export async function performLogin(email: string, password: string) {
 
 	const redirect = authStore.redirectAfterLogin
 	authStore.redirectAfterLogin = null
-	await goto(redirect ?? "/")
+	await goto(redirect ?? "/dashboard")
 }

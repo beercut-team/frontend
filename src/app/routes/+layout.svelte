@@ -13,8 +13,8 @@
 </script>
 
 <svelte:head>
-	<title>Beercut — PEAK IT 2026</title>
-	<meta name="description" content="Команда Beercut на конкурсе PEAK IT 2026" />
+	<title>Oculus-Feldsher — Офтальмологическая платформа</title>
+	<meta name="description" content="Медицинская платформа для офтальмологии — Oculus-Feldsher" />
 </svelte:head>
 
 <div class="flex min-h-svh flex-col">
