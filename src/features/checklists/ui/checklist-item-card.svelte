@@ -39,6 +39,8 @@
 				notes: notes || undefined,
 				status: ChecklistStatus.COMPLETED,
 			});
+			result = '';
+			notes = '';
 			onupdate();
 		} catch { /* handled by parent */ } finally {
 			isSaving = false;
@@ -49,6 +51,8 @@
 		isSaving = true;
 		try {
 			await apiReviewChecklistItem(item.id, { status, review_note: notes || undefined });
+			result = '';
+			notes = '';
 			onupdate();
 		} catch { /* handled by parent */ } finally {
 			isSaving = false;

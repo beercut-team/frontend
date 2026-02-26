@@ -62,6 +62,11 @@
 			isSaving = false;
 		}
 	}
+
+	function handleCancel() {
+		reset();
+		open = false;
+	}
 </script>
 
 <Dialog.Root bind:open>
@@ -133,7 +138,7 @@
 			</div>
 
 			<Dialog.Footer>
-				<Button type="button" variant="outline" onclick={() => { open = false; }}>
+				<Button type="button" variant="outline" onclick={handleCancel}>
 					Отмена
 				</Button>
 				<Button type="submit" disabled={isSaving || !name.trim()}>
