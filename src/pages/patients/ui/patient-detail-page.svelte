@@ -2,7 +2,7 @@
 	import { patientStore, PatientStatusBadge } from '@/entities/patient';
 	import { authStore } from '@/entities/user';
 	import { ChangeStatusDialog } from '@/features/patients';
-	import { ChecklistList, ChecklistProgressBar } from '@/features/checklists';
+	import { ChecklistList, ChecklistProgressBar, AddChecklistItemDialog } from '@/features/checklists';
 	import { MediaUpload, MediaGallery } from '@/features/media';
 	import { IOLForm, IOLResult, IOLHistory } from '@/features/iol-calculator';
 	import { CommentThread, CommentForm } from '@/features/comments';
@@ -152,6 +152,12 @@
 								<span class="text-sm text-muted-foreground">Глаз</span>
 								<p class="font-medium">{patient.eye}</p>
 							</div>
+							{#if patient.surgery_date}
+								<div>
+									<span class="text-sm text-muted-foreground">Дата операции</span>
+									<p class="font-medium">{new Date(patient.surgery_date).toLocaleDateString('ru-RU')}</p>
+								</div>
+							{/if}
 							{#if patient.phone}
 								<div>
 									<span class="text-sm text-muted-foreground">Телефон</span>
@@ -162,6 +168,24 @@
 								<div>
 									<span class="text-sm text-muted-foreground">Email</span>
 									<p class="font-medium">{patient.email}</p>
+								</div>
+							{/if}
+							{#if patient.snils}
+								<div>
+									<span class="text-sm text-muted-foreground">СНИЛС</span>
+									<p class="font-medium">{patient.snils}</p>
+								</div>
+							{/if}
+							{#if patient.passport_series || patient.passport_number}
+								<div>
+									<span class="text-sm text-muted-foreground">Паспорт</span>
+									<p class="font-medium">{patient.passport_series} {patient.passport_number}</p>
+								</div>
+							{/if}
+							{#if patient.policy_number}
+								<div>
+									<span class="text-sm text-muted-foreground">Полис ОМС</span>
+									<p class="font-medium">{patient.policy_number}</p>
 								</div>
 							{/if}
 							{#if patient.address}
@@ -182,6 +206,18 @@
 									<p class="font-medium">{patient.access_code}</p>
 								</div>
 							{/if}
+							{#if patient.doctor}
+								<div>
+									<span class="text-sm text-muted-foreground">Лечащий врач</span>
+									<p class="font-medium">{patient.doctor.first_name} {patient.doctor.last_name}</p>
+								</div>
+							{/if}
+							{#if patient.surgeon}
+								<div>
+									<span class="text-sm text-muted-foreground">Хирург</span>
+									<p class="font-medium">{patient.surgeon.first_name || patient.surgeon.name} {patient.surgeon.last_name}</p>
+								</div>
+							{/if}
 							{#if patient.notes}
 								<div class="sm:col-span-2">
 									<span class="text-sm text-muted-foreground">Заметки</span>
@@ -196,6 +232,11 @@
 					<div class="flex flex-col gap-6">
 						{#if checklistProgress}
 							<ChecklistProgressBar progress={checklistProgress} />
+						{/if}
+						{#if canEditChecklist}
+							<div class="flex justify-end">
+								<AddChecklistItemDialog {patientId} onSuccess={loadChecklist} />
+							</div>
 						{/if}
 						<Separator />
 						<ChecklistList

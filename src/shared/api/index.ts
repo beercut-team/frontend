@@ -19,6 +19,7 @@ export {
 export {
 	apiGetChecklist,
 	apiGetChecklistProgress,
+	apiCreateChecklistItem,
 	apiUpdateChecklistItem,
 	apiReviewChecklistItem,
 } from "./checklists"
@@ -69,6 +70,7 @@ export type {
 	PatientStatusHistory,
 	PatientDashboard,
 	ChecklistItem,
+	CreateChecklistItemRequest,
 	UpdateChecklistItemRequest,
 	ReviewChecklistItemRequest,
 	ChecklistProgress,

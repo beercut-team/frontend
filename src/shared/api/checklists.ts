@@ -2,6 +2,7 @@ import { apiInstance } from "./base"
 import type {
 	APIResponse,
 	ChecklistItem,
+	CreateChecklistItemRequest,
 	UpdateChecklistItemRequest,
 	ReviewChecklistItemRequest,
 	ChecklistProgress,
@@ -12,6 +13,9 @@ export const apiGetChecklist = (patientId: number) =>
 
 export const apiGetChecklistProgress = (patientId: number) =>
 	apiInstance.get<APIResponse<ChecklistProgress>>(`/api/v1/checklists/patient/${patientId}/progress`)
+
+export const apiCreateChecklistItem = (data: CreateChecklistItemRequest) =>
+	apiInstance.post<APIResponse<ChecklistItem>>(`/api/v1/checklists`, data)
 
 export const apiUpdateChecklistItem = (itemId: number, data: UpdateChecklistItemRequest) =>
 	apiInstance.patch<APIResponse<ChecklistItem>>(`/api/v1/checklists/${itemId}`, data)

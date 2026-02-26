@@ -255,6 +255,15 @@ export interface ChecklistItem {
 	updated_at: string
 }
 
+export interface CreateChecklistItemRequest {
+	patient_id: number
+	name: string
+	description?: string
+	category?: string
+	is_required?: boolean
+	expires_in_days?: number
+}
+
 export interface UpdateChecklistItemRequest {
 	result?: string
 	notes?: string

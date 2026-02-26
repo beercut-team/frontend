@@ -1,75 +1,41 @@
-/// <reference types="@sveltejs/kit" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-import { build, files, version } from '$service-worker';
+import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { registerRoute } from 'workbox-routing';
 
-const sw = self as unknown as ServiceWorkerGlobalScope;
+declare let self: ServiceWorkerGlobalScope;
 
-const CACHE_NAME = `cache-${version}`;
-const ASSETS = [...build, ...files];
+// Workbox will inject the manifest here
+precacheAndRoute(self.__WB_MANIFEST);
 
-// Install event - cache assets
-sw.addEventListener('install', (event) => {
-	event.waitUntil(
-		caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => {
-			sw.skipWaiting();
-		})
-	);
-});
+// Clean up old caches
+cleanupOutdatedCaches();
 
-// Activate event - clean old caches
-sw.addEventListener('activate', (event) => {
-	event.waitUntil(
-		caches.keys().then(async (keys) => {
-			for (const key of keys) {
-				if (key !== CACHE_NAME) await caches.delete(key);
-			}
-			sw.clients.claim();
-		})
-	);
-});
+// API requests - network first with fallback
+registerRoute(
+	({ url }) => url.pathname.startsWith('/api/'),
+	new NetworkFirst({
+		cacheName: 'api-cache',
+		networkTimeoutSeconds: 10,
+	})
+);
 
-// Fetch event - serve from cache, fallback to network
-sw.addEventListener('fetch', (event) => {
-	const { request } = event;
-	const url = new URL(request.url);
+// Static assets - cache first
+registerRoute(
+	({ request }) =>
+		request.destination === 'style' ||
+		request.destination === 'script' ||
+		request.destination === 'image',
+	new CacheFirst({
+		cacheName: 'static-assets',
+	})
+);
 
-	// Skip cross-origin requests
-	if (url.origin !== location.origin) return;
-
-	// API requests - network first
-	if (url.pathname.startsWith('/api/')) {
-		event.respondWith(
-			fetch(request)
-				.then((response) => {
-					return response;
-				})
-				.catch(() => {
-					return new Response(JSON.stringify({ error: 'Offline' }), {
-						status: 503,
-						headers: { 'Content-Type': 'application/json' }
-					});
-				})
-		);
-		return;
+self.addEventListener('message', (event) => {
+	if (event.data && event.data.type === 'SKIP_WAITING') {
+		self.skipWaiting();
 	}
-
-	// Static assets - cache first
-	event.respondWith(
-		caches.match(request).then((cached) => {
-			if (cached) return cached;
-
-			return fetch(request).then((response) => {
-				if (response.status === 200) {
-					const clone = response.clone();
-					caches.open(CACHE_NAME).then((cache) => {
-						cache.put(request, clone);
-					});
-				}
-				return response;
-			});
-		})
-	);
 });
