@@ -23,8 +23,8 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=build /app/build ./build
+COPY --from=build /app/.svelte-kit/output ./build
 COPY --from=build /app/package.json ./
 
 EXPOSE 3000
-CMD ["bun", "build/index.js"]
+CMD ["node", "build/server/index.js"]
