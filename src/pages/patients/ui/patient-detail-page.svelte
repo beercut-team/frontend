@@ -123,17 +123,17 @@
 		</div>
 
 		<Tabs.Root bind:value={activeTab}>
-			<Tabs.List>
-				<Tabs.Trigger value="info">Информация</Tabs.Trigger>
-				<Tabs.Trigger value="checklist">Чек-лист</Tabs.Trigger>
-				<Tabs.Trigger value="media">Файлы</Tabs.Trigger>
+			<Tabs.List class="w-full">
+				<Tabs.Trigger value="info" class="flex-1">Информация</Tabs.Trigger>
+				<Tabs.Trigger value="checklist" class="flex-1">Чек-лист</Tabs.Trigger>
+				<Tabs.Trigger value="media" class="flex-1">Файлы</Tabs.Trigger>
 				{#if canScheduleSurgery || surgeries.length > 0}
-					<Tabs.Trigger value="surgeries">Операции</Tabs.Trigger>
+					<Tabs.Trigger value="surgeries" class="flex-1">Операции</Tabs.Trigger>
 				{/if}
 				{#if authStore.isSurgeon || authStore.isAdmin}
-					<Tabs.Trigger value="iol">ИОЛ</Tabs.Trigger>
+					<Tabs.Trigger value="iol" class="flex-1">ИОЛ</Tabs.Trigger>
 				{/if}
-				<Tabs.Trigger value="comments">Комментарии</Tabs.Trigger>
+				<Tabs.Trigger value="comments" class="flex-1">Комментарии</Tabs.Trigger>
 			</Tabs.List>
 
 			<div class="mt-6">
