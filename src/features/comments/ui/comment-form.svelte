@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { apiCreateComment } from '@/shared/api';
+	import { authStore } from '@/entities/user';
 	import { Button } from '@/shared/ui/button';
 	import { Textarea } from '@/shared/ui/textarea';
 	import { Checkbox } from '@/shared/ui/checkbox';
@@ -23,12 +24,17 @@
 		isSubmitting = true;
 		error = '';
 
-		// Ensure patient_id is a number
-		const numericPatientId = typeof patientId === 'string' ? parseInt(patientId, 10) : patientId;
+		// For PATIENT role, use their own user.id as patient_id
+		// For other roles, use the patientId from props
+		const actualPatientId = authStore.isPatient
+			? authStore.user!.id
+			: (typeof patientId === 'string' ? parseInt(patientId, 10) : patientId);
 
 		console.log('🔍 Creating comment:', {
-			patient_id: numericPatientId,
-			patient_id_type: typeof numericPatientId,
+			user_role: authStore.user?.role,
+			user_id: authStore.user?.id,
+			patient_id: actualPatientId,
+			patient_id_type: typeof actualPatientId,
 			body: body.trim(),
 			body_length: body.trim().length,
 			is_urgent: isUrgent
@@ -36,7 +42,7 @@
 
 		try {
 			await apiCreateComment({
-				patient_id: numericPatientId,
+				patient_id: actualPatientId,
 				body: body.trim(),
 				is_urgent: isUrgent
 			});
