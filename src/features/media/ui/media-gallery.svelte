@@ -31,18 +31,36 @@
 
 	async function handleDownload(mediaId: number, fileName: string) {
 		try {
+			// Get download URL with authentication
 			const { data } = await apiGetMediaDownloadUrl(mediaId);
 			const url = data.data.url;
 
-			// Create temporary link element to force download
+			// Fetch the file as blob with authentication
+			const response = await fetch(url, {
+				headers: {
+					'Authorization': `Bearer ${document.cookie.split('token=')[1]?.split(';')[0]}`
+				}
+			});
+
+			if (!response.ok) throw new Error('Download failed');
+
+			// Create blob and download
+			const blob = await response.blob();
+			const blobUrl = URL.createObjectURL(blob);
+
 			const link = document.createElement('a');
-			link.href = url;
+			link.href = blobUrl;
 			link.download = fileName;
-			link.target = '_blank';
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
-		} catch { /* ignore */ }
+
+			// Clean up blob URL
+			setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+		} catch (error) {
+			console.error('Download error:', error);
+			alert('Ошибка скачивания файла');
+		}
 	}
 
 	async function handlePreview(file: Media) {
@@ -50,12 +68,29 @@
 
 		try {
 			const { data } = await apiGetMediaDownloadUrl(file.id);
-			previewUrl = data.data.url;
+			const url = data.data.url;
+
+			// Fetch image with authentication
+			const response = await fetch(url, {
+				headers: {
+					'Authorization': `Bearer ${document.cookie.split('token=')[1]?.split(';')[0]}`
+				}
+			});
+
+			if (!response.ok) throw new Error('Preview failed');
+
+			const blob = await response.blob();
+			previewUrl = URL.createObjectURL(blob);
 			previewImage = file;
-		} catch { /* ignore */ }
+		} catch (error) {
+			console.error('Preview error:', error);
+		}
 	}
 
 	function closePreview() {
+		if (previewUrl) {
+			URL.revokeObjectURL(previewUrl);
+		}
 		previewImage = null;
 		previewUrl = '';
 	}
