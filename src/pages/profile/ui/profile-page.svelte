@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { authStore } from '@/entities/user';
-	import { UserRole } from '@/shared/api/types';
 	import { Button } from '@/shared/ui/button';
 	import { Badge } from '@/shared/ui/badge';
 	import {
@@ -11,13 +10,7 @@
 		CardTitle,
 	} from '@/shared/ui/card';
 	import { Separator } from '@/shared/ui/separator';
-
-	const roleLabels: Record<string, string> = {
-		[UserRole.ADMIN]: 'Администратор',
-		[UserRole.SURGEON]: 'Хирург',
-		[UserRole.DISTRICT_DOCTOR]: 'Районный врач',
-		[UserRole.PATIENT]: 'Пациент',
-	};
+	import { getRoleLabel } from '@/shared/utils/role-labels';
 
 	const fullName = $derived(
 		authStore.user
@@ -42,7 +35,7 @@
 						<CardDescription>Информация о вашем аккаунте</CardDescription>
 					</div>
 					{#if authStore.user?.role}
-						<Badge variant="secondary">{roleLabels[authStore.user.role] ?? authStore.user.role}</Badge>
+						<Badge variant="secondary">{getRoleLabel(authStore.user.role)}</Badge>
 					{/if}
 				</div>
 			</CardHeader>

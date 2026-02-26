@@ -22,7 +22,7 @@
 			</div>
 			<div>
 				<span class="text-muted-foreground">Рекомендуемая сила ИОЛ</span>
-				<p class="text-lg font-bold text-primary">{result.recommended_iol_power.toFixed(1)} D</p>
+				<p class="text-lg font-bold text-primary">{result.iol_power.toFixed(1)} D</p>
 			</div>
 			<div>
 				<span class="text-muted-foreground">Прогнозируемая рефракция</span>

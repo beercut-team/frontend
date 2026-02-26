@@ -22,7 +22,7 @@
 						{new Date(comment.created_at).toLocaleString('ru-RU')}
 					</span>
 				</div>
-				<p class="text-sm">{comment.content}</p>
+				<p class="text-sm">{comment.body}</p>
 			</div>
 		{/each}
 	</div>

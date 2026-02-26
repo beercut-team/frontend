@@ -13,11 +13,27 @@
 	let error = $state('');
 
 	onMount(async () => {
+		console.log('[Patient Status] Загрузка статуса для кода:', code);
+		console.log('[Patient Status] Тип кода:', typeof code);
+		console.log('[Patient Status] Длина кода:', code?.length);
+
 		try {
 			const res = await apiGetPatientPublicStatus(code);
+			console.log('[Patient Status] Успешный ответ:', res.data);
 			data = res.data.data;
 		} catch (e: any) {
-			error = e.response?.data?.detail ?? 'Пациент не найден';
+			console.error('[Patient Status] Ошибка при загрузке:', e);
+			console.error('[Patient Status] Ответ сервера:', e.response?.data);
+			console.error('[Patient Status] Статус ответа:', e.response?.status);
+			console.error('[Patient Status] URL запроса:', e.config?.url);
+
+			const errorDetail = e.response?.data?.detail || e.response?.data?.error || e.message;
+			error = errorDetail || 'Пациент не найден';
+
+			// Добавляем код в сообщение об ошибке для отладки
+			if (error.includes('код')) {
+				error = `${error} (Код: ${code})`;
+			}
 		} finally {
 			isLoading = false;
 		}
@@ -39,9 +55,9 @@
 	{:else if data}
 		<Card>
 			<CardHeader>
-				<CardTitle>{data.patient_name}</CardTitle>
+				<CardTitle>{data.first_name} {data.last_name}</CardTitle>
 				<CardDescription>
-					Последнее обновление: {new Date(data.last_updated).toLocaleString('ru-RU')}
+					Код доступа: {data.access_code}
 				</CardDescription>
 			</CardHeader>
 			<CardContent class="flex flex-col gap-6">
@@ -60,8 +76,18 @@
 		</Card>
 	{:else}
 		<Card>
-			<CardContent class="py-8 text-center">
-				<p class="text-destructive">{error}</p>
+			<CardContent class="py-8">
+				<div class="space-y-4 text-center">
+					<p class="text-destructive">{error}</p>
+					<div class="rounded-md bg-muted p-4 text-left text-xs">
+						<p class="mb-2 font-semibold">Информация для отладки:</p>
+						<p>Код доступа: <code class="rounded bg-background px-1 py-0.5">{code}</code></p>
+						<p>Длина кода: {code?.length || 0} символов</p>
+						<p class="mt-2 text-muted-foreground">
+							Проверьте консоль браузера (F12) для подробной информации об ошибке
+						</p>
+					</div>
+				</div>
 			</CardContent>
 		</Card>
 	{/if}

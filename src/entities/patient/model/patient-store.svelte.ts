@@ -48,11 +48,21 @@ class PatientStore {
 
 	async fetchDashboard() {
 		this.isLoading = true
+		this.error = null
 		try {
 			const { data } = await apiGetPatientDashboard()
-			this.dashboard = data.data
+			this.dashboard = {
+				total_patients: data.data?.total_patients ?? 0,
+				by_status: data.data?.by_status ?? {},
+				recent_patients: data.data?.recent_patients ?? [],
+			}
 		} catch (e: any) {
 			this.error = e.response?.data?.detail ?? "Ошибка загрузки дашборда"
+			this.dashboard = {
+				total_patients: 0,
+				by_status: {},
+				recent_patients: [],
+			}
 		} finally {
 			this.isLoading = false
 		}
