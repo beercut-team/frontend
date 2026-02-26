@@ -19,6 +19,7 @@
 
 	let open = $state(false);
 	let isSaving = $state(false);
+	let error = $state<string | null>(null);
 	let name = $state('');
 	let description = $state('');
 	let category = $state('');
@@ -31,12 +32,14 @@
 		category = '';
 		isRequired = false;
 		expiresInDays = undefined;
+		error = null;
 	}
 
 	async function handleSubmit() {
 		if (!name.trim()) return;
 
 		isSaving = true;
+		error = null;
 		try {
 			const data: CreateChecklistItemRequest = {
 				patient_id: patientId,
@@ -47,12 +50,14 @@
 				expires_in_days: expiresInDays,
 			};
 
-			await apiCreateChecklistItem(data);
+			const response = await apiCreateChecklistItem(data);
+			console.log('Checklist item created:', response);
 			reset();
 			open = false;
 			onSuccess();
-		} catch (error) {
-			console.error('Failed to create checklist item:', error);
+		} catch (err: any) {
+			console.error('Failed to create checklist item:', err);
+			error = err?.response?.data?.error || err?.message || 'Не удалось создать пункт чек-листа';
 		} finally {
 			isSaving = false;
 		}
@@ -74,6 +79,12 @@
 			</Dialog.Description>
 		</Dialog.Header>
 		<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="flex flex-col gap-4">
+			{#if error}
+				<div class="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+					{error}
+				</div>
+			{/if}
+
 			<div class="flex flex-col gap-2">
 				<Label for="name">Название *</Label>
 				<Input
