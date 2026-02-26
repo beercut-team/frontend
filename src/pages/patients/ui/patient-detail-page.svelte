@@ -86,7 +86,7 @@
 			: ''
 	);
 
-	const canEditChecklist = $derived(authStore.isDistrictDoctor || authStore.isAdmin);
+	const canEditChecklist = $derived(authStore.isDistrictDoctor || authStore.isSurgeon || authStore.isAdmin);
 	const canReviewChecklist = $derived(authStore.isSurgeon || authStore.isAdmin);
 	const canChangeStatus = $derived(!authStore.isPatient);
 	const canUploadMedia = $derived(!authStore.isPatient);
