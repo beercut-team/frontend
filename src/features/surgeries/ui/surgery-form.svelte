@@ -45,14 +45,21 @@
 					error = '';
 					isSubmitting = true;
 					try {
+						// Convert datetime-local format to YYYY-MM-DD format
+						const dateValue = f.data.scheduled_date;
+						const formattedDate = dateValue.includes('T')
+							? dateValue.split('T')[0]
+							: dateValue;
+
 						const { data } = await apiCreateSurgery({
 							patient_id: patientId,
-							scheduled_date: f.data.scheduled_date,
+							scheduled_date: formattedDate,
 							notes: f.data.notes || undefined,
 						});
 						oncreated(data.data);
 					} catch (e: any) {
-						error = e.response?.data?.detail ?? 'Ошибка создания операции';
+						console.error('Surgery creation error:', e);
+						error = e.response?.data?.error || e.response?.data?.detail || 'Ошибка создания операции';
 					} finally {
 						isSubmitting = false;
 					}
@@ -74,7 +81,7 @@
 			<Form.Control>
 				{#snippet children({ props }: ControlSnippetProps)}
 					<Form.Label>Дата операции</Form.Label>
-					<Input {...props} {...constraints} type="datetime-local" bind:value={$formData.scheduled_date} />
+					<Input {...props} {...constraints} type="date" bind:value={$formData.scheduled_date} />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />

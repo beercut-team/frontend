@@ -235,69 +235,114 @@
 			</Card>
 		{/if}
 	{:else}
-		<!-- Staff Dashboard -->
-		{#if patientStore.isLoading}
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				{#each Array(4) as _}
-					<Skeleton class="h-24 rounded-lg" />
-				{/each}
-			</div>
-		{:else if dashboard}
-			<!-- Stats cards -->
-			<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+		<!-- Staff Dashboard - Profile View -->
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<!-- Profile Card -->
+			<div class="lg:col-span-1">
 				<Card>
-					<CardHeader class="pb-2">
-						<CardTitle class="text-sm text-muted-foreground">Всего пациентов</CardTitle>
+					<CardHeader>
+						<CardTitle>Профиль</CardTitle>
 					</CardHeader>
-					<CardContent>
-						<p class="text-3xl font-bold">{dashboard.total_patients ?? 0}</p>
+					<CardContent class="flex flex-col gap-4">
+						<div>
+							<span class="text-sm text-muted-foreground">ФИО</span>
+							<p class="mt-1 font-medium">{fullName}</p>
+						</div>
+						<div>
+							<span class="text-sm text-muted-foreground">Роль</span>
+							<p class="mt-1 font-medium">
+								{authStore.isSurgeon ? 'Хирург' : authStore.isDistrictDoctor ? 'Районный врач' : authStore.isAdmin ? 'Администратор' : 'Сотрудник'}
+							</p>
+						</div>
+						{#if authStore.user?.email}
+							<div>
+								<span class="text-sm text-muted-foreground">Email</span>
+								<p class="mt-1 font-medium">{authStore.user.email}</p>
+							</div>
+						{/if}
+						{#if authStore.user?.phone}
+							<div>
+								<span class="text-sm text-muted-foreground">Телефон</span>
+								<p class="mt-1 font-medium">{authStore.user.phone}</p>
+							</div>
+						{/if}
+						{#if authStore.user?.specialization}
+							<div>
+								<span class="text-sm text-muted-foreground">Специализация</span>
+								<p class="mt-1 font-medium">{authStore.user.specialization}</p>
+							</div>
+						{/if}
 					</CardContent>
 				</Card>
-				{#each Object.entries(dashboard.by_status ?? {}) as [status, count]}
-					{#if count > 0}
-						<Card>
-							<CardHeader class="pb-2">
-								<CardTitle class="text-sm text-muted-foreground">{statusLabels[status] ?? status}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p class="text-3xl font-bold">{count}</p>
-							</CardContent>
-						</Card>
-					{/if}
-				{/each}
 			</div>
 
-			<!-- Recent patients -->
-			{#if dashboard.recent_patients && dashboard.recent_patients.length > 0}
-				<div class="mb-8">
-					<div class="mb-4 flex items-center justify-between">
-						<h2 class="text-lg font-semibold">Последние пациенты</h2>
-						<Button variant="ghost" href="/patients">Все пациенты</Button>
-					</div>
-					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-						{#each dashboard.recent_patients as patient}
-							<PatientCard {patient} onclick={() => goto(`/patients/${patient.id}`)} />
-						{/each}
-					</div>
-				</div>
-			{/if}
+			<!-- Quick Actions -->
+			<div class="lg:col-span-2">
+				<Card>
+					<CardHeader>
+						<CardTitle>Быстрые действия</CardTitle>
+						<CardDescription>Часто используемые функции</CardDescription>
+					</CardHeader>
+					<CardContent class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+						<Button href="/patients" variant="outline" class="h-auto flex-col items-start gap-2 p-4">
+							<span class="text-lg">👥</span>
+							<div class="text-left">
+								<p class="font-semibold">Пациенты</p>
+								<p class="text-xs text-muted-foreground">Просмотр всех пациентов</p>
+							</div>
+						</Button>
+						<Button href="/patients/new" variant="outline" class="h-auto flex-col items-start gap-2 p-4">
+							<span class="text-lg">➕</span>
+							<div class="text-left">
+								<p class="font-semibold">Новый пациент</p>
+								<p class="text-xs text-muted-foreground">Добавить пациента</p>
+							</div>
+						</Button>
+						{#if authStore.isAdmin}
+							<Button href="/districts" variant="outline" class="h-auto flex-col items-start gap-2 p-4">
+								<span class="text-lg">🏥</span>
+								<div class="text-left">
+									<p class="font-semibold">Районы</p>
+									<p class="text-xs text-muted-foreground">Управление районами</p>
+								</div>
+							</Button>
+						{/if}
+						<Button href="/profile" variant="outline" class="h-auto flex-col items-start gap-2 p-4">
+							<span class="text-lg">⚙️</span>
+							<div class="text-left">
+								<p class="font-semibold">Настройки</p>
+								<p class="text-xs text-muted-foreground">Редактировать профиль</p>
+							</div>
+						</Button>
+					</CardContent>
+				</Card>
 
-			<!-- Surgeon: upcoming surgeries -->
-			{#if authStore.isSurgeon && surgeries.length > 0}
-				<div>
-					<div class="mb-4 flex items-center justify-between">
-						<h2 class="text-lg font-semibold">Запланированные операции</h2>
-						<Button variant="ghost" href="/surgeries">Все операции</Button>
-					</div>
-					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-						{#each surgeries as surgery}
-							<SurgeryCard {surgery} onclick={() => goto(`/surgeries/${surgery.id}`)} />
-						{/each}
-					</div>
-				</div>
-			{/if}
-		{:else if patientStore.error}
-			<p class="text-destructive">{patientStore.error}</p>
-		{/if}
+				{#if patientStore.isLoading}
+					<Skeleton class="mt-6 h-32 rounded-lg" />
+				{:else if dashboard}
+					<!-- Stats Overview -->
+					<Card class="mt-6">
+						<CardHeader>
+							<CardTitle>Статистика</CardTitle>
+							<CardDescription>Общая информация по пациентам</CardDescription>
+						</CardHeader>
+						<CardContent class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+							<div class="rounded-lg border p-3">
+								<p class="text-sm text-muted-foreground">Всего</p>
+								<p class="text-2xl font-bold">{dashboard.total_patients ?? 0}</p>
+							</div>
+							{#each Object.entries(dashboard.by_status ?? {}).slice(0, 5) as [status, count]}
+								{#if count > 0}
+									<div class="rounded-lg border p-3">
+										<p class="text-sm text-muted-foreground">{statusLabels[status] ?? status}</p>
+										<p class="text-2xl font-bold">{count}</p>
+									</div>
+								{/if}
+							{/each}
+						</CardContent>
+					</Card>
+				{/if}
+			</div>
+		</div>
 	{/if}
 </div>
