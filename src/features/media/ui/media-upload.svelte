@@ -54,12 +54,14 @@
 	{#if isUploading}
 		<p class="text-sm text-muted-foreground">Загрузка...</p>
 	{:else}
-		<p class="mb-2 text-sm text-muted-foreground">
-			Перетащите файл сюда или
-		</p>
-		<Button variant="outline" size="sm" onclick={() => fileInput.click()}>
-			Выберите файл
-		</Button>
+		<div class="flex flex-col items-center gap-3">
+			<p class="text-sm text-muted-foreground">
+				Перетащите файл сюда или
+			</p>
+			<Button variant="outline" size="sm" onclick={() => fileInput.click()}>
+				Выберите файл
+			</Button>
+		</div>
 		<input bind:this={fileInput} type="file" class="hidden" onchange={handleFileSelect} />
 	{/if}
 	{#if error}
