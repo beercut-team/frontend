@@ -19,6 +19,8 @@
 	import { applyPhoneMask } from '@/shared/utils/phone-mask';
 	import { extractApiError } from '@/shared/utils/extract-error';
 	import { roleLabels } from '@/shared/utils/role-labels';
+	import { districtStore } from '@/entities/district';
+	import { onMount } from 'svelte';
 
 	let apiError = $state('');
 
@@ -33,6 +35,7 @@
 			last_name: z.string().min(1, 'Введите фамилию'),
 			middle_name: z.string().optional(),
 			phone: z.string().optional(),
+			district_id: z.number({ required_error: 'Выберите район' }).min(1, 'Выберите район'),
 		})
 		.refine((data) => data.password === data.passwordConfirm, {
 			message: 'Пароли не совпадают',
@@ -54,6 +57,7 @@
 			last_name: '',
 			middle_name: '',
 			phone: '',
+			district_id: 0,
 		} satisfies RegisterData,
 		{
 			SPA: true,
@@ -97,6 +101,12 @@
 			input.setSelectionRange(cursorPos + diff, cursorPos + diff);
 		});
 	}
+
+	onMount(() => {
+		if (districtStore.districts.length === 0) {
+			districtStore.fetchDistricts();
+		}
+	});
 </script>
 
 <div class="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
@@ -127,6 +137,33 @@
 											{#each roleOptions as opt}
 												<Select.Item value={opt.value}>{opt.label}</Select.Item>
 											{/each}
+										</Select.Content>
+									</Select.Root>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						{/snippet}
+					</Form.Field>
+
+					<Form.Field {form} name="district_id">
+						{#snippet children({ constraints: _ }: FieldSnippetProps)}
+							<Form.Control>
+								{#snippet children({ props: _ }: ControlSnippetProps)}
+									<Form.Label>Район</Form.Label>
+									<Select.Root type="single" onValueChange={(v) => ($formData.district_id = parseInt(v, 10))}>
+										<Select.Trigger class="w-full">
+											{districtStore.districts.find((d) => d.id === $formData.district_id)?.name ?? 'Выберите район'}
+										</Select.Trigger>
+										<Select.Content>
+											{#if districtStore.isLoading}
+												<Select.Item value="0" disabled>Загрузка...</Select.Item>
+											{:else if districtStore.districts.length === 0}
+												<Select.Item value="0" disabled>Нет доступных районов</Select.Item>
+											{:else}
+												{#each districtStore.districts as district}
+													<Select.Item value={district.id.toString()}>{district.name}</Select.Item>
+												{/each}
+											{/if}
 										</Select.Content>
 									</Select.Root>
 								{/snippet}
