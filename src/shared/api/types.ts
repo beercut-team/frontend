@@ -162,6 +162,8 @@ export interface Patient {
 	surgeon_id?: number
 	district_id: number
 	district?: District
+	doctor?: User
+	surgeon?: User
 	notes?: string
 	surgery_date?: string
 	created_at: string

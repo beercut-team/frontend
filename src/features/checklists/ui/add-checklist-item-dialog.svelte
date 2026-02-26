@@ -6,16 +6,8 @@
 	import { Label } from '@/shared/ui/label';
 	import { Textarea } from '@/shared/ui/textarea';
 	import { Checkbox } from '@/shared/ui/checkbox';
-	import {
-		Dialog,
-		DialogContent,
-		DialogDescription,
-		DialogFooter,
-		DialogHeader,
-		DialogTitle,
-		DialogTrigger,
-	} from '@/shared/ui/dialog';
-	import { Plus } from 'lucide-svelte';
+	import * as Dialog from '@/shared/ui/dialog';
+	import { Plus } from '@lucide/svelte';
 
 	let {
 		patientId,
@@ -67,20 +59,20 @@
 	}
 </script>
 
-<Dialog bind:open>
-	<DialogTrigger asChild let:builder>
-		<Button builders={[builder]} size="sm" class="gap-2">
+<Dialog.Root bind:open>
+	<Dialog.Trigger>
+		<Button size="sm" class="gap-2">
 			<Plus class="h-4 w-4" />
 			Добавить пункт
 		</Button>
-	</DialogTrigger>
-	<DialogContent class="sm:max-w-[500px]">
-		<DialogHeader>
-			<DialogTitle>Добавить пункт в чек-лист</DialogTitle>
-			<DialogDescription>
+	</Dialog.Trigger>
+	<Dialog.Content class="sm:max-w-[500px]">
+		<Dialog.Header>
+			<Dialog.Title>Добавить пункт в чек-лист</Dialog.Title>
+			<Dialog.Description>
 				Добавьте дополнительное обследование или документ для пациента
-			</DialogDescription>
-		</DialogHeader>
+			</Dialog.Description>
+		</Dialog.Header>
 		<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="flex flex-col gap-4">
 			<div class="flex flex-col gap-2">
 				<Label for="name">Название *</Label>
@@ -129,14 +121,14 @@
 				/>
 			</div>
 
-			<DialogFooter>
+			<Dialog.Footer>
 				<Button type="button" variant="outline" onclick={() => { open = false; }}>
 					Отмена
 				</Button>
 				<Button type="submit" disabled={isSaving || !name.trim()}>
 					{isSaving ? 'Сохранение...' : 'Добавить'}
 				</Button>
-			</DialogFooter>
+			</Dialog.Footer>
 		</form>
-	</DialogContent>
-</Dialog>
+	</Dialog.Content>
+</Dialog.Root>
