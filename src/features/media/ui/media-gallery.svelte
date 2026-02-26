@@ -3,6 +3,7 @@
 	import { getMediaThumbnailUrl, apiGetMediaDownloadUrl, apiDeleteMedia } from '@/shared/api';
 	import { Button } from '@/shared/ui/button';
 	import { Card } from '@/shared/ui/card';
+	import * as Dialog from '@/shared/ui/dialog';
 
 	let {
 		media,
@@ -15,6 +16,8 @@
 	} = $props();
 
 	let deleting = $state<number | null>(null);
+	let previewImage = $state<Media | null>(null);
+	let previewUrl = $state<string>('');
 
 	async function handleDelete(mediaId: number) {
 		deleting = mediaId;
@@ -42,6 +45,21 @@
 		} catch { /* ignore */ }
 	}
 
+	async function handlePreview(file: Media) {
+		if (!isImage(file.content_type)) return;
+
+		try {
+			const { data } = await apiGetMediaDownloadUrl(file.id);
+			previewUrl = data.data.url;
+			previewImage = file;
+		} catch { /* ignore */ }
+	}
+
+	function closePreview() {
+		previewImage = null;
+		previewUrl = '';
+	}
+
 	function isImage(contentType: string) {
 		return contentType.startsWith('image/');
 	}
@@ -53,7 +71,11 @@
 	<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
 		{#each media as file}
 			<Card class="overflow-hidden">
-				<div class="aspect-square bg-muted">
+				<button
+					class="aspect-square bg-muted w-full {isImage(file.content_type) ? 'cursor-pointer hover:opacity-80 transition-opacity' : 'cursor-default'}"
+					onclick={() => handlePreview(file)}
+					disabled={!isImage(file.content_type)}
+				>
 					{#if isImage(file.content_type)}
 						<img
 							src={getMediaThumbnailUrl(file.id)}
@@ -65,7 +87,7 @@
 							<span class="text-3xl">📄</span>
 						</div>
 					{/if}
-				</div>
+				</button>
 				<div class="flex flex-col gap-1 p-2">
 					<span class="truncate text-xs font-medium">{file.original_name}</span>
 					<span class="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} КБ</span>
@@ -94,4 +116,30 @@
 			</Card>
 		{/each}
 	</div>
+
+	<!-- Image Preview Dialog -->
+	<Dialog.Root open={previewImage !== null} onOpenChange={(open) => { if (!open) closePreview(); }}>
+		<Dialog.Content class="max-w-4xl">
+			<Dialog.Header>
+				<Dialog.Title>{previewImage?.original_name}</Dialog.Title>
+			</Dialog.Header>
+			{#if previewUrl}
+				<div class="flex items-center justify-center bg-muted rounded-lg overflow-hidden">
+					<img
+						src={previewUrl}
+						alt={previewImage?.original_name}
+						class="max-h-[70vh] w-auto object-contain"
+					/>
+				</div>
+			{/if}
+			<Dialog.Footer>
+				<Button variant="outline" onclick={closePreview}>Закрыть</Button>
+				{#if previewImage}
+					<Button onclick={() => previewImage && handleDownload(previewImage.id, previewImage.original_name)}>
+						Скачать
+					</Button>
+				{/if}
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
 {/if}
