@@ -1,10 +1,16 @@
 /**
  * Formats a phone number string into +7 (XXX) XXX-XX-XX mask.
  * Only keeps digits, forces +7 prefix.
+ * Returns empty string if no meaningful digits.
  */
 export function applyPhoneMask(raw: string): string {
 	// Strip everything except digits
 	let digits = raw.replace(/\D/g, "")
+
+	// If empty or just "7", return empty to allow clearing
+	if (digits.length === 0 || digits === "7") {
+		return ""
+	}
 
 	// Normalize: if starts with 8 or 7, treat as Russian number
 	if (digits.startsWith("8")) {
