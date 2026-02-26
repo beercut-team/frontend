@@ -4,26 +4,27 @@
 	import { Footer } from '@/widgets/footer';
 	import { authStore } from '@/entities/user';
 	import { onMount } from 'svelte';
-	import { pwaInfo } from 'virtual:pwa-info';
+	// PWA temporarily disabled
+	// import { pwaInfo } from 'virtual:pwa-info';
 
 	let { children } = $props();
 
 	onMount(async () => {
 		authStore.init();
 
-		// Register PWA
-		if (pwaInfo) {
-			const { registerSW } = await import('virtual:pwa-register');
-			registerSW({
-				immediate: true,
-				onRegistered(registration) {
-					console.log('PWA registered:', registration);
-				},
-				onRegisterError(error) {
-					console.error('PWA registration error:', error);
-				}
-			});
-		}
+		// PWA temporarily disabled
+		// if (pwaInfo) {
+		// 	const { registerSW } = await import('virtual:pwa-register');
+		// 	registerSW({
+		// 		immediate: true,
+		// 		onRegistered(registration) {
+		// 			console.log('PWA registered:', registration);
+		// 		},
+		// 		onRegisterError(error) {
+		// 			console.error('PWA registration error:', error);
+		// 		}
+		// 	});
+		// }
 	});
 </script>
 
@@ -36,9 +37,6 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 	<meta name="apple-mobile-web-app-title" content="Oculus" />
-	{#if pwaInfo}
-		{@html pwaInfo.webManifest.linkTag}
-	{/if}
 </svelte:head>
 
 <div class="flex min-h-svh flex-col">
