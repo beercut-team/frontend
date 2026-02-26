@@ -1,5 +1,5 @@
 export { apiInstance, API_URL } from "./base"
-export { apiLogin, apiRegister, apiRefresh, apiGetMe, apiLogout } from "./auth"
+export { apiLogin, apiPatientLogin, apiRegister, apiRefresh, apiGetMe, apiLogout } from "./auth"
 export {
 	apiGetPatients,
 	apiGetPatient,
@@ -25,7 +25,7 @@ export {
 export {
 	apiUploadMedia,
 	apiGetMedia,
-	getMediaDownloadUrl,
+	apiGetMediaDownloadUrl,
 	getMediaThumbnailUrl,
 	apiDeleteMedia,
 } from "./media"

@@ -8,13 +8,13 @@ import type {
 } from "./types"
 
 export const apiGetChecklist = (patientId: number) =>
-	apiInstance.get<APIResponse<ChecklistItem[]>>(`/api/v1/patients/${patientId}/checklist`)
+	apiInstance.get<APIResponse<ChecklistItem[]>>(`/api/v1/checklists/patient/${patientId}`)
 
 export const apiGetChecklistProgress = (patientId: number) =>
-	apiInstance.get<APIResponse<ChecklistProgress>>(`/api/v1/patients/${patientId}/checklist/progress`)
+	apiInstance.get<APIResponse<ChecklistProgress>>(`/api/v1/checklists/patient/${patientId}/progress`)
 
-export const apiUpdateChecklistItem = (patientId: number, itemId: number, data: UpdateChecklistItemRequest) =>
-	apiInstance.patch<APIResponse<ChecklistItem>>(`/api/v1/patients/${patientId}/checklist/${itemId}`, data)
+export const apiUpdateChecklistItem = (itemId: number, data: UpdateChecklistItemRequest) =>
+	apiInstance.patch<APIResponse<ChecklistItem>>(`/api/v1/checklists/${itemId}`, data)
 
-export const apiReviewChecklistItem = (patientId: number, itemId: number, data: ReviewChecklistItemRequest) =>
-	apiInstance.post<APIResponse<ChecklistItem>>(`/api/v1/patients/${patientId}/checklist/${itemId}/review`, data)
+export const apiReviewChecklistItem = (itemId: number, data: ReviewChecklistItemRequest) =>
+	apiInstance.post<APIResponse<ChecklistItem>>(`/api/v1/checklists/${itemId}/review`, data)

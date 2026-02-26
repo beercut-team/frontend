@@ -1,16 +1,14 @@
 <script lang="ts">
 	import type { Media } from '@/shared/api';
-	import { getMediaThumbnailUrl, getMediaDownloadUrl, apiDeleteMedia } from '@/shared/api';
+	import { getMediaThumbnailUrl, apiGetMediaDownloadUrl, apiDeleteMedia } from '@/shared/api';
 	import { Button } from '@/shared/ui/button';
 	import { Card } from '@/shared/ui/card';
 
 	let {
-		patientId,
 		media,
 		canDelete = false,
 		ondelete,
 	}: {
-		patientId: number;
 		media: Media[];
 		canDelete?: boolean;
 		ondelete?: () => void;
@@ -21,11 +19,27 @@
 	async function handleDelete(mediaId: number) {
 		deleting = mediaId;
 		try {
-			await apiDeleteMedia(patientId, mediaId);
+			await apiDeleteMedia(mediaId);
 			ondelete?.();
 		} catch { /* ignore */ } finally {
 			deleting = null;
 		}
+	}
+
+	async function handleDownload(mediaId: number, fileName: string) {
+		try {
+			const { data } = await apiGetMediaDownloadUrl(mediaId);
+			const url = data.data.url;
+
+			// Create temporary link element to force download
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = fileName;
+			link.target = '_blank';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch { /* ignore */ }
 	}
 
 	function isImage(contentType: string) {
@@ -42,8 +56,8 @@
 				<div class="aspect-square bg-muted">
 					{#if isImage(file.content_type)}
 						<img
-							src={getMediaThumbnailUrl(patientId, file.id)}
-							alt={file.original_filename}
+							src={getMediaThumbnailUrl(file.id)}
+							alt={file.original_name}
 							class="h-full w-full object-cover"
 						/>
 					{:else}
@@ -53,17 +67,17 @@
 					{/if}
 				</div>
 				<div class="flex flex-col gap-1 p-2">
-					<span class="truncate text-xs font-medium">{file.original_filename}</span>
+					<span class="truncate text-xs font-medium">{file.original_name}</span>
 					<span class="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} КБ</span>
 					<div class="flex gap-1">
-						<a
-							href={getMediaDownloadUrl(patientId, file.id)}
-							target="_blank"
-							rel="noopener"
-							class="text-xs text-primary hover:underline"
+						<Button
+							variant="ghost"
+							size="sm"
+							class="h-auto p-0 text-xs text-primary"
+							onclick={() => handleDownload(file.id, file.original_name)}
 						>
 							Скачать
-						</a>
+						</Button>
 						{#if canDelete}
 							<Button
 								variant="ghost"

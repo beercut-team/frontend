@@ -1,10 +1,10 @@
 import { goto } from "$app/navigation"
-import { apiLogin } from "@/shared/api"
+import { apiPatientLogin } from "@/shared/api"
 import { authStore } from "@/entities/user"
 
-export async function performLogin(email: string, password: string) {
-	const { data } = await apiLogin({ email, password })
-	console.log("🔐 Staff login response:", data)
+export async function performPatientLogin(accessCode: string) {
+	const { data } = await apiPatientLogin({ access_code: accessCode })
+	console.log("🔐 Patient login response:", data)
 	console.log("🔐 User from response:", data.user || data.data?.user)
 	console.log("🔐 Role from response:", data.user?.role || data.data?.user?.role)
 

@@ -95,6 +95,10 @@ export interface LoginRequest {
 	password: string
 }
 
+export interface PatientLoginRequest {
+	access_code: string
+}
+
 export interface RegisterRequest {
 	email: string
 	password: string
@@ -104,9 +108,6 @@ export interface RegisterRequest {
 	last_name?: string
 	middle_name?: string
 	phone?: string
-	district_id?: number
-	specialization?: string
-	license_number?: string
 }
 
 export interface MessageResponse {
@@ -211,10 +212,12 @@ export interface PatientStatusRequest {
 }
 
 export interface PatientPublicResponse {
-	patient_name: string
+	access_code: string
+	first_name: string
+	last_name: string
 	status: PatientStatus
+	surgery_date?: string
 	status_history: PatientStatusHistory[]
-	last_updated: string
 }
 
 export interface PatientStatusHistory {
@@ -226,7 +229,7 @@ export interface PatientStatusHistory {
 
 export interface PatientDashboard {
 	total_patients: number
-	by_status: Record<PatientStatus, number>
+	by_status: Partial<Record<PatientStatus, number>>
 	recent_patients: Patient[]
 }
 
@@ -277,12 +280,14 @@ export interface ChecklistProgress {
 export interface Media {
 	id: number
 	patient_id: number
-	filename: string
-	original_filename: string
+	uploaded_by: number
+	file_name: string
+	original_name: string
 	content_type: string
 	size: number
-	uploaded_by: number
-	description?: string
+	storage_path: string
+	thumbnail_path?: string
+	category: string
 	created_at: string
 }
 
@@ -292,13 +297,12 @@ export interface IOLCalculationRequest {
 	patient_id: number
 	eye: Eye
 	axial_length: number
-	keratometry_k1: number
-	keratometry_k2: number
-	anterior_chamber_depth: number
-	lens_thickness?: number
-	white_to_white?: number
-	formula: string
+	keratometry1: number
+	keratometry2: number
+	acd?: number
 	target_refraction?: number
+	formula: string
+	a_constant?: number
 }
 
 export interface IOLCalculation {
@@ -306,16 +310,16 @@ export interface IOLCalculation {
 	patient_id: number
 	eye: Eye
 	axial_length: number
-	keratometry_k1: number
-	keratometry_k2: number
-	anterior_chamber_depth: number
-	lens_thickness?: number
-	white_to_white?: number
-	formula: string
+	keratometry1: number
+	keratometry2: number
+	acd?: number
 	target_refraction: number
-	recommended_iol_power: number
+	formula: string
+	iol_power: number
 	predicted_refraction: number
-	calculated_by: number
+	a_constant?: number
+	calculated_by?: number
+	warnings?: string
 	created_at: string
 }
 
@@ -338,10 +342,7 @@ export interface Surgery {
 
 export interface CreateSurgeryRequest {
 	patient_id: number
-	operation_type: OperationType
-	eye: Eye
 	scheduled_date: string
-	iol_power?: number
 	notes?: string
 }
 
@@ -363,15 +364,18 @@ export interface Comment {
 	patient_id: number
 	author_id: number
 	author?: User
-	content: string
+	parent_id?: number
+	body: string
 	is_urgent: boolean
 	is_read: boolean
 	created_at: string
+	updated_at: string
 }
 
 export interface CreateCommentRequest {
 	patient_id: number
-	content: string
+	parent_id?: number
+	body: string
 	is_urgent?: boolean
 }
 
@@ -382,9 +386,9 @@ export interface Notification {
 	user_id: number
 	type: NotificationType
 	title: string
-	message: string
+	body: string
 	is_read: boolean
-	related_patient_id?: number
-	related_surgery_id?: number
+	entity_type?: string
+	entity_id?: number
 	created_at: string
 }

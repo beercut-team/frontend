@@ -28,8 +28,8 @@
 					<Table.Cell>{calc.eye === Eye.OS ? 'OS' : calc.eye === Eye.OD ? 'OD' : 'OU'}</Table.Cell>
 					<Table.Cell>{calc.formula}</Table.Cell>
 					<Table.Cell>{calc.axial_length}</Table.Cell>
-					<Table.Cell>{calc.keratometry_k1}/{calc.keratometry_k2}</Table.Cell>
-					<Table.Cell class="font-medium">{calc.recommended_iol_power.toFixed(1)}</Table.Cell>
+					<Table.Cell>{calc.keratometry1}/{calc.keratometry2}</Table.Cell>
+					<Table.Cell class="font-medium">{calc.iol_power.toFixed(1)}</Table.Cell>
 					<Table.Cell>{calc.predicted_refraction.toFixed(2)}</Table.Cell>
 				</Table.Row>
 			{/each}

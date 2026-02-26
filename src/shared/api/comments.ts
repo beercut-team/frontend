@@ -5,7 +5,7 @@ export const apiCreateComment = (data: CreateCommentRequest) =>
 	apiInstance.post<APIResponse<Comment>>("/api/v1/comments", data)
 
 export const apiGetComments = (patientId: number) =>
-	apiInstance.get<APIResponse<Comment[]>>(`/api/v1/patients/${patientId}/comments`)
+	apiInstance.get<APIResponse<Comment[]>>(`/api/v1/comments/patient/${patientId}`)
 
 export const apiMarkCommentRead = (commentId: number) =>
 	apiInstance.post<APIResponse<void>>(`/api/v1/comments/${commentId}/read`, {})

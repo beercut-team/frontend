@@ -18,6 +18,7 @@
 	import { UserRole } from '@/shared/api/types';
 	import { applyPhoneMask } from '@/shared/utils/phone-mask';
 	import { extractApiError } from '@/shared/utils/extract-error';
+	import { roleLabels } from '@/shared/utils/role-labels';
 
 	let apiError = $state('');
 
@@ -80,9 +81,9 @@
 	const { form: formData, enhance } = form;
 
 	const roleOptions = [
-		{ value: UserRole.DISTRICT_DOCTOR, label: 'Районный врач' },
-		{ value: UserRole.SURGEON, label: 'Хирург' },
-		{ value: UserRole.PATIENT, label: 'Пациент' },
+		{ value: UserRole.DISTRICT_DOCTOR, label: roleLabels[UserRole.DISTRICT_DOCTOR] },
+		{ value: UserRole.SURGEON, label: roleLabels[UserRole.SURGEON] },
+		{ value: UserRole.PATIENT, label: roleLabels[UserRole.PATIENT] },
 	];
 
 	function handlePhoneInput(e: Event) {

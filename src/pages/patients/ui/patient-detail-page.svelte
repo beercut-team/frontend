@@ -210,7 +210,7 @@
 						{#if canUploadMedia}
 							<MediaUpload {patientId} onuploaded={loadMedia} />
 						{/if}
-						<MediaGallery {patientId} {media} canDelete={canUploadMedia} ondelete={loadMedia} />
+						<MediaGallery {media} canDelete={canUploadMedia} ondelete={loadMedia} />
 					</div>
 				</Tabs.Content>
 

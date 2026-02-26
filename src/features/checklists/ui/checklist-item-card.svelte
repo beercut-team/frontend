@@ -34,7 +34,7 @@
 	async function save() {
 		isSaving = true;
 		try {
-			await apiUpdateChecklistItem(item.patient_id, item.id, {
+			await apiUpdateChecklistItem(item.id, {
 				result: result || undefined,
 				notes: notes || undefined,
 				status: ChecklistStatus.COMPLETED,
@@ -48,7 +48,7 @@
 	async function review(status: ChecklistStatus.COMPLETED | ChecklistStatus.REJECTED) {
 		isSaving = true;
 		try {
-			await apiReviewChecklistItem(item.patient_id, item.id, { status, review_note: notes || undefined });
+			await apiReviewChecklistItem(item.id, { status, review_note: notes || undefined });
 			onupdate();
 		} catch { /* handled by parent */ } finally {
 			isSaving = false;
