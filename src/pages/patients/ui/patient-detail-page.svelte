@@ -274,7 +274,7 @@
 					<div class="flex flex-col gap-6">
 						<CommentForm {patientId} oncommented={loadComments} />
 						<Separator />
-						<CommentThread {comments} />
+						<CommentThread {comments} {patientId} onrefresh={loadComments} />
 					</div>
 				</Tabs.Content>
 			</div>

@@ -36,7 +36,7 @@ export {
 	apiCreateSurgery,
 	apiUpdateSurgery,
 } from "./surgeries"
-export { apiCreateComment, apiGetComments, apiMarkCommentRead } from "./comments"
+export { apiCreateComment, apiGetComments, apiMarkCommentRead, apiMarkAllCommentsRead } from "./comments"
 export {
 	apiGetNotifications,
 	apiGetUnreadCount,
