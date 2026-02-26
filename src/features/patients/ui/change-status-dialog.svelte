@@ -48,7 +48,9 @@
 			onstatusChanged();
 			onclose();
 		} catch (e: any) {
-			error = e.response?.data?.detail ?? 'Ошибка смены статуса';
+			console.error('Status change error:', e);
+			console.error('Response data:', e.response?.data);
+			error = e.response?.data?.error || e.response?.data?.detail || e.message || 'Ошибка смены статуса';
 		} finally {
 			isSubmitting = false;
 		}
@@ -64,7 +66,10 @@
 
 		<div class="flex flex-col gap-4 py-4">
 			{#if error}
-				<p class="text-sm text-destructive">{error}</p>
+				<div class="rounded-md border border-destructive/50 bg-destructive/10 p-3">
+					<p class="text-sm font-medium text-destructive">Ошибка смены статуса</p>
+					<p class="text-xs text-destructive/80 mt-1">{error}</p>
+				</div>
 			{/if}
 
 			<div class="flex flex-col gap-2">
