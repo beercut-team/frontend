@@ -1,5 +1,6 @@
-import { apiInstance } from "./base"
-import type { APIResponse, Comment, CreateCommentRequest } from "./types"
+import { apiInstance } from "@/shared/api/base"
+import type { APIResponse } from "@/shared/api/types"
+import type { Comment, CreateCommentRequest } from "../model/types"
 
 export const apiCreateComment = (data: CreateCommentRequest) => {
 	console.log('📤 API request:', {

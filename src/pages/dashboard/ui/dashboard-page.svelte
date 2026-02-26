@@ -6,8 +6,10 @@
 	import { Button } from '@/shared/ui/button';
 	import { Skeleton } from '@/shared/ui/skeleton';
 	import { onMount } from 'svelte';
-	import { apiGetSurgeries, apiGetPatient, apiGetChecklistProgress, apiGetComments } from '@/shared/api';
-	import type { Surgery, Patient, ChecklistProgress, Comment } from '@/shared/api';
+	import { apiGetSurgeries, apiGetPatient, apiGetChecklistProgress } from '@/shared/api';
+	import { apiGetComments } from '@/entities/comment';
+	import type { Surgery, Patient, ChecklistProgress } from '@/shared/api';
+	import type { Comment } from '@/entities/comment';
 	import { SurgeryCard } from '@/features/surgeries';
 	import { ChecklistProgressBar } from '@/features/checklists';
 	import { goto } from '$app/navigation';

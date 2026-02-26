@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiCreateComment } from '@/shared/api';
+	import { apiCreateComment } from '@/entities/comment';
 	import { authStore } from '@/entities/user';
 	import { Button } from '@/shared/ui/button';
 	import { Textarea } from '@/shared/ui/textarea';

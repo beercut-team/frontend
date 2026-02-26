@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Comment } from '@/shared/api';
-	import { apiMarkAllCommentsRead } from '@/shared/api';
+	import type { Comment } from '@/entities/comment';
+	import { apiMarkAllCommentsRead } from '@/entities/comment';
 	import { Badge } from '@/shared/ui/badge';
 	import { Button } from '@/shared/ui/button';
 

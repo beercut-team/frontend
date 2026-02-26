@@ -12,9 +12,11 @@
 	import { Separator } from '@/shared/ui/separator';
 	import { Skeleton } from '@/shared/ui/skeleton';
 	import * as Tabs from '@/shared/ui/tabs';
-	import { apiGetChecklist, apiGetChecklistProgress, apiGetMedia, apiGetIOLHistory, apiGetComments, apiGetSurgeries } from '@/shared/api';
+	import { apiGetChecklist, apiGetChecklistProgress, apiGetMedia, apiGetIOLHistory, apiGetSurgeries } from '@/shared/api';
+	import { apiGetComments } from '@/entities/comment';
 	import { downloadRoutingSheet, downloadChecklistReport } from '@/shared/api';
-	import type { ChecklistItem, ChecklistProgress, Media, IOLCalculation, Comment, Surgery } from '@/shared/api';
+	import type { ChecklistItem, ChecklistProgress, Media, IOLCalculation, Surgery } from '@/shared/api';
+	import type { Comment } from '@/entities/comment';
 	import { onMount } from 'svelte';
 
 	let { patientId, initialTab = 'info' }: { patientId: number; initialTab?: string } = $props();

@@ -36,7 +36,6 @@ export {
 	apiCreateSurgery,
 	apiUpdateSurgery,
 } from "./surgeries"
-export { apiCreateComment, apiGetComments, apiMarkCommentRead, apiMarkAllCommentsRead } from "./comments"
 export {
 	apiGetNotifications,
 	apiGetUnreadCount,
@@ -79,7 +78,5 @@ export type {
 	Surgery,
 	CreateSurgeryRequest,
 	UpdateSurgeryRequest,
-	Comment,
-	CreateCommentRequest,
 	Notification,
 } from "./types"
