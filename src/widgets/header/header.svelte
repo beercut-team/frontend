@@ -50,19 +50,6 @@
 			Oculus-Feldsher
 		</a>
 
-		<!-- Desktop Navigation -->
-		<nav class="hidden items-center gap-4 text-sm md:flex lg:gap-6">
-			{#if !authStore.isAuthenticated}
-				<a href="/#team" class="text-muted-foreground transition-colors hover:text-foreground">
-					Команда
-				</a>
-			{/if}
-			{#each navLinks as link}
-				<a href={link.href} class="text-muted-foreground transition-colors hover:text-foreground">
-					{link.label}
-				</a>
-			{/each}
-		</nav>
 
 		<!-- Right Side Actions -->
 		<div class="flex items-center gap-1 sm:gap-2">
