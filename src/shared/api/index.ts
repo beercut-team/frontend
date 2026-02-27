@@ -1,5 +1,6 @@
 export { apiInstance, API_URL } from "./base"
 export { apiLogin, apiPatientLogin, apiRegister, apiRefresh, apiGetMe, apiLogout } from "./auth"
+export { apiGetUsers, apiGetUser } from "./users"
 export {
 	apiGetPatients,
 	apiGetPatient,

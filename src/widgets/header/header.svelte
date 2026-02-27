@@ -15,6 +15,8 @@
 			{ href: '/dashboard', label: 'Дашборд' },
 			{ href: '/patients', label: 'Пациенты' },
 			{ href: '/admin/districts', label: 'Районы' },
+			{ href: '/admin/users', label: 'Пользователи' },
+			{ href: '/admin/surgeries', label: 'Операции' },
 		],
 		[UserRole.SURGEON]: [
 			{ href: '/dashboard', label: 'Дашборд' },
