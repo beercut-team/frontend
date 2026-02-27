@@ -246,7 +246,7 @@
           <div style="width:30px;height:30px;border-radius:50%;background:#2AABEE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.448 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.834.941z"/></svg>
           </div>
-          <div class="text-[11px] text-foreground leading-snug">✅ Приезжайте<br><strong>15 мая</strong> в 10:00</div>
+          <div class="text-[11px] text-foreground leading-snug"> Приезжайте<br><strong>15 мая</strong> в 10:00</div>
         </div>
       </div>
 
@@ -387,11 +387,11 @@
           </div>
           <div class="space-y-2.5">
             <div>
-              <div class="tg-bubble">✅ <strong>Готовы к операции!</strong><br/>Приезжайте <span class="text-primary font-semibold">15 мая в 10:00</span>. Возьмите паспорт и полис ОМС.</div>
+              <div class="tg-bubble"> <strong>Готовы к операции!</strong><br/>Приезжайте <span class="text-primary font-semibold">15 мая в 10:00</span>. Возьмите паспорт и полис ОМС.</div>
               <div class="text-[10px] text-muted-foreground mt-1 pl-1">14:23</div>
             </div>
             <div>
-              <div class="tg-bubble">⏰ Напоминание: завтра операция.<br/>Не ешьте с 22:00 сегодня.</div>
+              <div class="tg-bubble"> Напоминание: завтра операция.<br/>Не ешьте с 22:00 сегодня.</div>
               <div class="text-[10px] text-muted-foreground mt-1 pl-1">20:00</div>
             </div>
           </div>
