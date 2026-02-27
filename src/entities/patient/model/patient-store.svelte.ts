@@ -51,10 +51,17 @@ class PatientStore {
 		this.error = null
 		try {
 			const { data } = await apiGetPatientDashboard()
+			// Backend returns map of status counts directly in data.data
+			// Type assertion needed because API type doesn't match backend response
+			const statusCounts = data.data as unknown as Record<string, number>
+
+			// Calculate total from all status counts
+			const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0)
+
 			this.dashboard = {
-				total_patients: data.data?.total_patients ?? 0,
-				by_status: data.data?.by_status ?? {},
-				recent_patients: data.data?.recent_patients ?? [],
+				total_patients: total,
+				by_status: statusCounts,
+				recent_patients: [],
 			}
 		} catch (e: any) {
 			this.error = e.response?.data?.detail ?? "Ошибка загрузки дашборда"
