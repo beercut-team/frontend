@@ -109,7 +109,7 @@
       </div>
 
       <div class="flex gap-3 flex-wrap">
-        <a href="#login" class="btn btn-primary btn-lg">
+        <a href="/login" class="btn btn-primary btn-lg">
           Войти в систему
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
