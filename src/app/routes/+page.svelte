@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   let code = $state('');
   let statusDone = $state(false);
 
@@ -17,6 +19,49 @@
   ];
 
   let openFaq = $state<number | null>(null);
+
+  // Eye cursor tracking
+  let eyeContainer: HTMLDivElement | null = $state(null);
+  let pupilOffsetX = $state(0);
+  let pupilOffsetY = $state(0);
+
+  onMount(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!eyeContainer) return;
+
+      const rect = eyeContainer.getBoundingClientRect();
+      const eyeCenterX = rect.left + rect.width / 2;
+      const eyeCenterY = rect.top + rect.height / 2;
+
+      // Calculate vector from eye center to cursor
+      const deltaX = e.clientX - eyeCenterX;
+      const deltaY = e.clientY - eyeCenterY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+      // Maximum pupil movement (iris radius - pupil radius, scaled to SVG coordinates)
+      const maxMovement = 38;
+
+      if (distance > 0) {
+        // Normalize and scale to max movement
+        const scale = Math.min(distance / 200, 1);
+        pupilOffsetX = (deltaX / distance) * maxMovement * scale;
+        pupilOffsetY = (deltaY / distance) * maxMovement * scale;
+      }
+    };
+
+    const handleMouseLeave = () => {
+      pupilOffsetX = 0;
+      pupilOffsetY = 0;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  });
 </script>
 
 <svelte:head>
@@ -94,7 +139,7 @@
 
     <!-- RIGHT: 3D Eye -->
     <div class="flex flex-col items-center gap-4 py-10">
-      <div class="relative" style="width:420px;height:420px;flex-shrink:0">
+      <div bind:this={eyeContainer} class="relative" style="width:420px;height:420px;flex-shrink:0">
 
         <!-- Orbit ring -->
         <div class="absolute inset-4 rounded-full pointer-events-none border border-dashed border-primary/30"></div>
@@ -159,19 +204,21 @@
             </g>
             <circle cx="210" cy="210" r="82" fill="url(#hlmb)"/>
             <circle cx="210" cy="210" r="82" fill="none" stroke="rgba(6,18,76,0.65)" stroke-width="4"/>
-            <g class="hero-pupil-b" style="transform-origin:210px 210px">
+            <g class="hero-pupil-b" style="transform-origin:210px 210px; transform: translate({pupilOffsetX}, {pupilOffsetY}); transition: transform 0.15s ease-out;">
               <circle cx="210" cy="210" r="44" fill="url(#hpg)"/>
               <circle cx="210" cy="210" r="44" fill="url(#hprg)"/>
               <circle cx="210" cy="210" r="36" fill="rgba(2,5,10,0.5)"/>
             </g>
             <g clip-path="url(#hic)">
-              <g class="hero-scan" style="transform-origin:210px 210px">
+              <g class="hero-scan" style="transform-origin:210px 210px; transform: translate({pupilOffsetX}, {pupilOffsetY}); transition: transform 0.15s ease-out;">
                 <rect x="130" y="209" width="160" height="2" rx="1" fill="rgba(147,197,253,0.75)"/>
                 <rect x="130" y="205" width="160" height="10" rx="5" fill="rgba(147,197,253,0.15)"/>
               </g>
             </g>
-            <ellipse cx="186" cy="182" rx="22" ry="14" fill="url(#hhl)" transform="rotate(-25,186,182)"/>
-            <circle cx="196" cy="186" r="3.5" fill="rgba(255,255,255,0.9)"/>
+            <g style="transform: translate({pupilOffsetX}, {pupilOffsetY}); transition: transform 0.15s ease-out;">
+              <ellipse cx="186" cy="182" rx="22" ry="14" fill="url(#hhl)" transform="rotate(-25,186,182)"/>
+              <circle cx="196" cy="186" r="3.5" fill="rgba(255,255,255,0.9)"/>
+            </g>
           </g>
           <path d="M55,210 Q105,108 210,108 Q315,108 365,210" fill="none" stroke="rgba(15,21,35,0.08)" stroke-width="20" stroke-linecap="round"/>
           <path d="M55,210 Q105,108 210,108 Q315,108 365,210" fill="none" stroke="rgba(15,21,35,0.13)" stroke-width="1.8" stroke-linecap="round"/>
