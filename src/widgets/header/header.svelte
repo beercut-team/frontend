@@ -8,16 +8,21 @@
 
 	let mobileMenuOpen = $state(false);
 
-	const roleNavLinks: Record<string, { href: string; label: string }[]> = {
+	type NavLink = { href: string; label: string };
+
+	const roleNavLinks: Record<string, NavLink[]> = {
 		[UserRole.ADMIN]: [
+			{ href: '/dashboard', label: 'Дашборд' },
 			{ href: '/patients', label: 'Пациенты' },
 			{ href: '/admin/districts', label: 'Районы' },
 		],
 		[UserRole.SURGEON]: [
+			{ href: '/dashboard', label: 'Дашборд' },
 			{ href: '/patients', label: 'Пациенты' },
 			{ href: '/surgeries', label: 'Операции' },
 		],
 		[UserRole.DISTRICT_DOCTOR]: [
+			{ href: '/dashboard', label: 'Дашборд' },
 			{ href: '/patients', label: 'Пациенты' },
 		],
 		[UserRole.PATIENT]: [
@@ -25,7 +30,7 @@
 		],
 	};
 
-	const navLinks = $derived(
+	const navLinks = $derived<NavLink[]>(
 		authStore.user ? roleNavLinks[authStore.user.role] ?? [] : []
 	);
 
@@ -44,12 +49,31 @@
 	<div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
 		<!-- Logo -->
 		<a
-			href={authStore.isAuthenticated ? '/dashboard' : '/'}
+			href="/"
 			class="text-lg font-bold tracking-tight sm:text-xl"
 		>
 			Oculus-Feldsher
 		</a>
 
+		<!-- Desktop Navigation -->
+		<nav class="hidden flex-1 items-center gap-1 md:flex md:px-6">
+			{#if !authStore.isAuthenticated}
+				<a
+					href="/#team"
+					class="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+				>
+					Команда
+				</a>
+			{/if}
+			{#each navLinks as link}
+				<a
+					href={link.href}
+					class="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+				>
+					{link.label}
+				</a>
+			{/each}
+		</nav>
 
 		<!-- Right Side Actions -->
 		<div class="flex items-center gap-1 sm:gap-2">
