@@ -10,10 +10,25 @@ class UserStore {
 		this.isLoading = true
 		this.error = null
 		try {
-			const { data } = await apiGetUsers({ limit: params?.limit ?? 100, role: params?.role })
-			this.users = data.data
+			const response = await apiGetUsers({ limit: params?.limit ?? 100, role: params?.role })
+			console.log('Users API response:', response)
+
+			// Handle different response formats
+			if (Array.isArray(response.data)) {
+				// Direct array response
+				this.users = response.data
+			} else if (response.data?.data) {
+				// Wrapped in data property
+				this.users = Array.isArray(response.data.data) ? response.data.data : []
+			} else {
+				console.error('Unexpected response format:', response)
+				this.error = "Неверный формат ответа API"
+				this.users = []
+			}
 		} catch (e: any) {
-			this.error = e.response?.data?.detail ?? "Ошибка загрузки пользователей"
+			console.error('Error fetching users:', e)
+			this.error = e.response?.data?.error || e.response?.data?.detail || e.message || "Ошибка загрузки пользователей"
+			this.users = []
 		} finally {
 			this.isLoading = false
 		}
